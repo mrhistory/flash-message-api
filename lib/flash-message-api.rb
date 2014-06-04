@@ -21,8 +21,36 @@ module FlashMessageAPI
     response = @endpoint["messages/#{id}.json"].delete
     parse_json(response.to_str)[:deleted]
   rescue Exception => e
-    raise Exception, e.response #if e.respond_to? response
-    #raise Exception, e.message
+    raise Exception, e.response if e.respond_to? response
+    raise Exception, e.message
+  end
+
+  def self.get_message(id)
+    response = @endpoint["messages/#{id}.json"].get
+    FlashMessage.new(parse_json(response.to_str))
+  rescue Exception => e
+    raise Exception, e.response if e.respond_to? response
+    raise Exception, e.message
+  end
+
+  def self.update_message(message)
+    response = @endpoint["messages/#{message.id}.json"].put(message.to_json)
+    FlashMessage.new(parse_json(response.to_str))
+  rescue Exception => e
+    raise Exception, e.response if e.respond_to? response
+    raise Exception, e.message
+  end
+
+  def self.get_all_messages
+    response = @endpoint["messages/.json"].get
+    messages = []
+    parse_json(response.to_str).each do |message|
+      messages << FlashMessage.new(message)
+    end
+    return messages
+  rescue Exception => e
+    raise Exception, e.response if e.respond_to? response
+    raise Exception, e.message
   end
   
   protected

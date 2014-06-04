@@ -10,4 +10,13 @@ describe FlashMessageAPI do
 
   before(:each) do
   end
+
+  it 'should create a flash message and delete it' do
+    message = FlashMessageAPI::FlashMessage.new( { message: 'New Message' })
+    response = FlashMessageAPI.create_message(message)
+    response.message.should eq(message.message)
+
+    response2 = FlashMessageAPI.delete_message(response.id)
+    response2.should eq(true)
+  end
 end
